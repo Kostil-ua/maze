@@ -1,10 +1,11 @@
 from pygame import*
+from random import randint
 
 class GameSprite(sprite.Sprite):
     def __init__(self, pimage, x, y, speed):
         super().__init__()
 
-        self.pimage = transform.scale(image.load(pimage), (65, 65))
+        self.pimage = transform.scale(image.load(pimage), (60, 60))
 
         self.rect = self.pimage.get_rect()
         self.speed = speed 
@@ -40,6 +41,19 @@ class Enemy(GameSprite):
             self.rect.x -= self.speed
         if self.direction == "right":
             self.rect.x += self.speed
+    
+    direction2 = "left"
+
+    def update2(self):
+        if self.rect.x > 170:
+            self.direction2 = "left"
+        if self.rect.x < 0:
+            self.direction2 = "right"
+
+        if self.direction2 == "left":
+            self.rect.x -= self.speed
+        if self.direction2 == "right":
+            self.rect.x += self.speed
 
 
 win_height = 500
@@ -49,27 +63,128 @@ window = display.set_mode((win_width, win_height))
 background = transform.scale(image.load("background.jpg"), (win_width, win_height))
 display.set_caption("Лабіринт")
 
+class Wall(sprite.Sprite):
+    def __init__(self, color1, color2, color3, wall_x, wall_y, wall_w, wall_h):
+        super().__init__()
+        self.color1 = color1
+        self.color2 = color2
+        self.color3 = color3
+        self.width = wall_w
+        self.height = wall_h
+        self.image = Surface((self.width, self.height))
+        self.image.fill((color1, color2, color3))
+        self.rect = self.image.get_rect()
+        self.rect.x = wall_x
+        self.rect.y = wall_y
+
+    def draw_wall(self):
+        window.blit(self.image, (self.rect.x, self.rect.y))
+
+
+
 player = Player("hero.png", 10, win_height-80, 4)
 enemy = Enemy("cyborg.png", win_width-80, 80, 2)
+enemy2 = Enemy("cyborg_l.png", 100, 300, 2)
 final = GameSprite("treasure.png", win_width-80, win_height-80, 0)
+
+wall1 = Wall(2, 247, 121, 20, 20, 650, 20)
+wall2 = Wall(2, 247, 121, 20, 20, 20, 380)
+wall3 = Wall(2, 247, 121, 650, 20, 20, 390)
+wall4 = Wall(2, 247, 121, 120, 120, 20, 400)
+wall5 = Wall(2, 247, 121, 220, 20, 20, 380)
+wall6 = Wall(2, 247, 121, 220, 380, 120, 20)
+wall7 = Wall(2, 247, 121, 420, 380, 100, 20)
+wall8 = Wall(2, 247, 121, 520, 380, 20, 150)
+wall9 = Wall(2, 247, 121, 420, 280, 20, 100)
+wall10 = Wall(2, 247, 121, 420, 280, 145, 20)
+wall11 = Wall(2, 247, 121, 320, 160, 20, 140)
+wall12 = Wall(2, 247, 121, 320, 160, 230, 20)
+wall13 = Wall(2, 247, 121, 620, 390, 40, 20)
+wall14 = Wall(2, 247, 121, 540, 160, 20, 140)
+wall15 = Wall(2, 247, 121, 320, 20, 20, 50)
 
 game = True
 clock = time.Clock()
-FPS = 60
+FPS = 30
 
 mixer.init()
-mixer.music.load("jungles.ogg")
+mixer.music.load("pirate-ship-cinematic-movie-scene-254144.mp3")
 mixer.music.play()
+mixer.music.get_volume()
+
+kick = mixer.Sound("kick.ogg")
+money = mixer.Sound("money.ogg")
 
 while game:
     window.blit(background, (0, 0))
 
     player.update()
     enemy.update()
+    enemy2.update2()
+
+    wall1.draw_wall()
+    wall2.draw_wall()
+    wall3.draw_wall()
+    wall4.draw_wall()
+    wall5.draw_wall()
+    wall6.draw_wall()
+    wall7.draw_wall()
+    wall8.draw_wall()
+    wall9.draw_wall()
+    wall10.draw_wall()
+    wall11.draw_wall()
+    wall12.draw_wall()
+    wall13.draw_wall()
+    wall14.draw_wall()
+    wall15.draw_wall()
 
     player.draw()
     enemy.draw()
+    enemy2.draw()
     final.draw()
+
+    if sprite.collide_rect(player, enemy2):
+        enemy2.rect.x = randint(0, 700)
+        enemy2.rect.y = randint(0,500)
+        kick.play()
+        player.rect.x = 30
+        player.rect.y = 430
+
+    if sprite.collide_rect(player, enemy):
+        enemy.rect.x = randint(0, 700)
+        enemy.rect.y = randint(0,500)
+        kick.play()
+        player.rect.x = 30
+        player.rect.y = 430
+
+
+
+    if sprite.collide_rect(player, wall1) or \
+            sprite.collide_rect(player, wall2) or \
+            sprite.collide_rect(player, wall3) or \
+            sprite.collide_rect(player, wall4) or \
+            sprite.collide_rect(player, wall5) or \
+            sprite.collide_rect(player, wall6) or \
+            sprite.collide_rect(player, wall7) or \
+            sprite.collide_rect(player, wall9) or \
+            sprite.collide_rect(player, wall10) or \
+            sprite.collide_rect(player, wall11) or \
+            sprite.collide_rect(player, wall12) or \
+            sprite.collide_rect(player, wall13) or \
+            sprite.collide_rect(player, wall14) or \
+            sprite.collide_rect(player, wall15) or \
+            sprite.collide_rect(player, enemy) or \
+            sprite.collide_rect(player, enemy2):
+        kick.play()
+        player.rect.x = 30
+        player.rect.y = 430
+    if sprite.collide_rect(player, final):
+        time.delay(1000)
+        money.play()
+        game = False
+    
+    
+
 
     for e in event.get():
         if e.type == QUIT:
