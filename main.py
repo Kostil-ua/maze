@@ -34,7 +34,7 @@ class Enemy(GameSprite):
     def update(self):
         if self.rect.x > win_width - self.rect.width:
             self.direction = "left"
-        if self.rect.x < win_width * 0.5:
+        if self.rect.x < win_width * 0.7:
             self.direction = "right"
 
         if self.direction == "left":
@@ -55,12 +55,11 @@ class Enemy(GameSprite):
         if self.direction2 == "right":
             self.rect.x += self.speed
 
-
 win_height = 500
 win_width = 700
 
 window = display.set_mode((win_width, win_height))
-background = transform.scale(image.load("background.jpg"), (win_width, win_height))
+background = transform.scale(image.load("wawe.jpg"), (win_width, win_height))
 display.set_caption("Лабіринт")
 
 class Wall(sprite.Sprite):
@@ -80,28 +79,28 @@ class Wall(sprite.Sprite):
     def draw_wall(self):
         window.blit(self.image, (self.rect.x, self.rect.y))
 
-
-
-player = Player("hero.png", 10, win_height-80, 4)
-enemy = Enemy("cyborg.png", win_width-80, 80, 2)
-enemy2 = Enemy("cyborg_l.png", 100, 300, 2)
+player = Player("tank.png", 10, win_height-80, 4)
+enemy = Enemy("tank2.png", win_width-80, 110, 2)
+enemy2 = Enemy("tank2.png", 100, 300, 2)
 final = GameSprite("treasure.png", win_width-80, win_height-80, 0)
 
-wall1 = Wall(2, 247, 121, 20, 20, 650, 20)
-wall2 = Wall(2, 247, 121, 20, 20, 20, 380)
-wall3 = Wall(2, 247, 121, 650, 20, 20, 390)
-wall4 = Wall(2, 247, 121, 120, 120, 20, 400)
-wall5 = Wall(2, 247, 121, 220, 20, 20, 380)
-wall6 = Wall(2, 247, 121, 220, 380, 120, 20)
-wall7 = Wall(2, 247, 121, 420, 380, 100, 20)
-wall8 = Wall(2, 247, 121, 520, 380, 20, 150)
-wall9 = Wall(2, 247, 121, 420, 280, 20, 100)
-wall10 = Wall(2, 247, 121, 420, 280, 145, 20)
-wall11 = Wall(2, 247, 121, 320, 160, 20, 140)
-wall12 = Wall(2, 247, 121, 320, 160, 230, 20)
-wall13 = Wall(2, 247, 121, 620, 390, 40, 20)
-wall14 = Wall(2, 247, 121, 540, 160, 20, 140)
-wall15 = Wall(2, 247, 121, 320, 20, 20, 50)
+wall2 = Wall(3, 121, 121, 20, 20, 20, 380)
+wall3 = Wall(3, 121, 121, 650, 20, 20, 390)
+wall4 = Wall(3, 121, 121, 120, 120, 20, 400)
+wall5 = Wall(3, 121, 121, 220, 20, 20, 380)
+wall6 = Wall(3, 121, 121, 220, 380, 120, 20)
+wall7 = Wall(3, 121, 121, 420, 380, 100, 20)
+wall8 = Wall(3, 121, 121, 520, 380, 20, 150)
+wall1 = Wall(3, 121, 121, 20, 20, 650, 20)
+wall9 = Wall(3, 121, 121, 420, 280, 20, 100)
+wall10 = Wall(3, 121, 121, 420, 280, 145, 20)
+wall11 = Wall(3, 121, 121, 320, 170, 20, 140)
+wall12 = Wall(3, 121, 121, 320, 170, 230, 20)
+wall13 = Wall(3, 121, 121, 620, 390, 40, 20)
+wall14 = Wall(3, 121, 121, 540, 160, 20, 140)
+wall15 = Wall(3, 121, 121, 320, 20, 20, 50)
+wall16 = Wall(3, 121, 121, 480, 120, 20, 50)
+wall17 = Wall(3, 121, 121, 480, 120, 95, 15)
 
 game = True
 clock = time.Clock()
@@ -137,6 +136,8 @@ while game:
     wall13.draw_wall()
     wall14.draw_wall()
     wall15.draw_wall()
+    wall16.draw_wall()
+    wall17.draw_wall()
 
     player.draw()
     enemy.draw()
@@ -156,8 +157,6 @@ while game:
         kick.play()
         player.rect.x = 30
         player.rect.y = 430
-
-
 
     if sprite.collide_rect(player, wall1) or \
             sprite.collide_rect(player, wall2) or \
@@ -182,9 +181,6 @@ while game:
         time.delay(1000)
         money.play()
         game = False
-    
-    
-
 
     for e in event.get():
         if e.type == QUIT:
